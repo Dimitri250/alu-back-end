@@ -1,34 +1,36 @@
 #!/usr/bin/python3
-"""This script retrieves todos for a specific user."""
+"""Script to get todos for a user from API"""
 
-import json
 import requests
 import sys
 
-"""Imported modules to be used by the program"""
+
+def main():
+    """main function"""
+    user_id = int(sys.argv[1])
+    todo_url = 'https://jsonplaceholder.typicode.com/todos'
+    user_url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
+
+    response = requests.get(todo_url)
+
+    total_questions = 0
+    completed = []
+    for todo in response.json():
+
+        if todo['userId'] == user_id:
+            total_questions += 1
+
+            if todo['completed']:
+                completed.append(todo['title'])
+
+    user_name = requests.get(user_url).json()['name']
+
+    printer = ("Employee {} is done with tasks({}/{}):".format(user_name,
+               len(completed), total_questions))
+    print(printer)
+    for q in completed:
+        print("\t {}".format(q))
 
 
 if __name__ == '__main__':
-    """Scripts to be executed"""
-    id = sys.argv[1]
-    response = requests.get(
-        'https://jsonplaceholder.typicode.com/users/{}'.format(id),
-        verify=False)
-    data = json.loads(response.text)
-    todos = requests.get(
-        'https://jsonplaceholder.typicode.com/todos/')
-    result = json.loads(todos.text)
-    done = 0
-    total = 0
-    itemArr = []
-
-    for item in result:
-        if data['id'] == item['userId']:
-            total += 1
-            if item['completed']:
-                done += 1
-                itemArr.append(item['title'])
-
-    print("Employee {} is done with ({}/{})".format(data['name'], done, total))
-    for item in itemArr:
-        print("\t {}".format(item))
+    main()
