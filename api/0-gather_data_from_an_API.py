@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Script to get todos for a user from API"""
+"""Script that fetchs an API and calculates the completed tasks"""
 
 import requests
 import sys
